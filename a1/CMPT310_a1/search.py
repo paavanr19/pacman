@@ -105,22 +105,27 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
 
     visited_states=[] #will store visited states so we don't repeatedl visit states
 
-    while not stack.isEmpty():
+    while not stack.isEmpty(): #keep searching until the fringe is empty
         stack_top = stack.pop()
         state = stack_top[0]
         path = stack_top[1]
-        if problem.isGoalState(state):
+        if problem.isGoalState(state): #return path if we have reached the end
             return path
-        elif state not in visited_states:
+        elif state not in visited_states: #add state to visited states list to prevent visiting repeated states
             visited_states.append(state)
         else:
             continue
-        successors = problem.getSuccessors(state)
-        for element in successors:
+        successors = problem.getSuccessors(state) #get successors of current state
+        for element in successors: #push the new states 
             new_path = path.copy()
             new_path.append(element[1])
             stack_item = [element[0],new_path] 
             stack.push(stack_item)
+
+            ##code to run
+            #python3 pacman.py -l tinyMaze -p SearchAgent
+            #python3 pacman.py -l mediumMaze -p SearchAgent
+            #python3 pacman.py -l bigMaze -z .5 -p SearchAgent
 
 
 
@@ -131,11 +136,75 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+
+    queue = util.Queue() #use a queue for traversal
+    start_pos = problem.getStartState() #get the starting state
+    queue_item = [start_pos,[]] #push the start state and an empty path for the first node
+    queue.push(queue_item)
+
+    visited_states = [] #will contain visited states to avoid repeating nodes
+
+    while not queue.isEmpty(): #keep searching until the fringe is empty
+        queue_front = queue.pop()
+        state = queue_front[0]
+        path = queue_front[1]
+        if problem.isGoalState(state):
+            return path
+        elif state not in visited_states:
+            visited_states.append(state)
+        else:
+            continue
+        successors = problem.getSuccessors(state)
+        for element in successors:
+            new_path = path.copy()
+            new_path.append(element[1])
+            new_queue_item = [element[0],new_path]
+            queue.push(new_queue_item)
+
+            #code to run
+            # python3 pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
+            # python3 pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
+
+
+    
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
+    queue = util.PriorityQueue()
+    start_pos = problem.getStartState()
+    queue_item = [start_pos,[],0] 
+    queue.push(queue_item,0)
+
+    visited_states = [] #will contain visited states to avoid repeating nodes
+
+    while not queue.isEmpty():
+        queue_front=queue.pop()
+        state=queue_front[0]
+        path=queue_front[1]
+        cost=queue_front[2]
+        if problem.isGoalState(state):
+            return path
+        elif state not in visited_states:
+            visited_states.append(state)
+        else:
+            continue
+        successors = problem.getSuccessors(state)
+        for element in successors:
+            new_path=path.copy()
+            new_path.append(element[1])
+            new_cost=cost+element[2]
+            new_queue_item=[element[0],new_path,new_cost]
+            queue.push(new_queue_item,new_cost)
+
+    #code to run
+    # python3 pacman.py -l mediumMaze -p SearchAgent -a fn=ucs
+    # python3 pacman.py -l mediumDottedMaze -p StayEastSearchAgent
+    # python3 pacman.py -l mediumScaryMaze -p StayWestSearchAgent
+
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None) -> float:
