@@ -225,6 +225,36 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
     queue_item = [start_pos,[],0,heuristic(start_pos,problem)]  #store state, path, cost, heuristic
     queue.push(queue_item,starting_f)
 
+    visited_dict = {}
+
+    while not queue.isEmpty():
+        queue_front=queue.pop()
+        state=queue_front[0]
+        path=queue_front[1]
+        cost=queue_front[2]
+        h = queue_front[3]
+        if problem.isGoalState(state):
+            return path
+        elif state not in visited_dict:
+            visited_dict[state]=cost
+        else:
+            if visited_dict[state] > cost:
+                visited_dict[state] = cost
+            else:
+                continue
+        successors = problem.getSuccessors(state)
+        for element in successors:
+            new_path=path.copy()
+            new_path.append(element[1])
+            new_cost=cost+element[2]
+            new_h = heuristic(element[0],problem)
+            f = new_cost+new_h
+            new_queue_item=[element[0],new_path,new_cost,new_h]
+            queue.push(new_queue_item,f)
+
+
+        
+
     
 
 
