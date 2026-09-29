@@ -90,6 +90,42 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+
+    #1. create stack
+    #2. add start pos to stack 
+    #3. while loop until fringe is empty
+    #4. pop top element off stack and form path
+    #5. if not goal state, add successors from right to left with path
+    #4. return to top of while loop
+
+    stack = util.Stack() #stack for traversal
+    start_pos = problem.getStartState() #get the starting state
+    stack_item = [start_pos, []] #push the start state and an empty path for the first node
+    stack.push(stack_item)
+
+    visited_states=[] #will store visited states so we don't repeatedl visit states
+
+    while not stack.isEmpty():
+        stack_top = stack.pop()
+        state = stack_top[0]
+        path = stack_top[1]
+        if problem.isGoalState(state):
+            return path
+        elif state not in visited_states:
+            visited_states.append(state)
+        else:
+            continue
+        successors = problem.getSuccessors(state)
+        for element in successors:
+            new_path = path.copy()
+            new_path.append(element[1])
+            stack_item = [element[0],new_path] 
+            stack.push(stack_item)
+
+
+
+ 
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
