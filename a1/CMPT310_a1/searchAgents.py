@@ -414,6 +414,7 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     #x2, y2 = corner_coords[1][0] and corner_coords[1][1]
     #x3,y3 = corner_coords[2][0] and corner_coords[2][1]
     #x4,y4 = corner_coords[3][0] and corner_coords[3][1]
+
     manhattan_distances = []
 
     for item in corner_coords:
@@ -423,7 +424,8 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     if len(manhattan_distances)==0:
         return 0
     else:
-        max(manhattan_distances)
+        return max(manhattan_distances)+min(manhattan_distances)
+        
 
 
 

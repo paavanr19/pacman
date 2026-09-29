@@ -252,12 +252,8 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
             new_queue_item=[element[0],new_path,new_cost,new_h]
             queue.push(new_queue_item,f)
 
-
-        
-
-    
-
-
+    #code to run
+    # python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
 
 
     util.raiseNotDefined()
