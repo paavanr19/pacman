@@ -517,17 +517,25 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     food_list = foodGrid.asList() #list of food positions
     x,y=position #current coordinates
 
+
     for item in food_list: 
         manhattan_distance = abs(item[0]-x)+abs(item[1]-y) #calculate manhattan distance
         distances_list.append(manhattan_distance) #add to list of distances
 
+    food_dots_distances_list = [] #holds manhattan distances between food dots
+
+    for item1 in food_list: #calculate manhattan distances between food dots and put in food_dots_distances_list
+        for item2 in food_list:
+            manhattan_distance_2=util.manhattanDistance(item1,item2)
+            food_dots_distances_list.append(manhattan_distance_2)
+    
+    #heuristic is the maximum between the distance between the furthest food dots and the distance between the furthest food dot from pacman
 
 
     if len(distances_list)==0: #if all food has been eaten return 0
         return 0
     else: #else return heuristic
-        return max(distances_list)
-
+        return max(max(food_dots_distances_list),max(distances_list))
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
