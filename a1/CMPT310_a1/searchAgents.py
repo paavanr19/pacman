@@ -518,7 +518,20 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    distances_list=[]
+    food_list = foodGrid.asList()
+    x,y=position
+
+    for item in food_list:
+        manhattan_distance = abs(item[0]-x)+abs(item[1]-y)
+        distances_list.append(manhattan_distance)
+
+
+
+    if len(distances_list)==0:
+        return 0
+    else:
+        return max(distances_list)
 
 
 class ClosestDotSearchAgent(SearchAgent):
