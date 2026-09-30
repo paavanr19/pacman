@@ -128,11 +128,6 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
             #python3 pacman.py -l bigMaze -z .5 -p SearchAgent
 
 
-
- 
-
-    util.raiseNotDefined()
-
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
@@ -145,17 +140,17 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     visited_states = [] #will contain visited states to avoid repeating nodes
 
     while not queue.isEmpty(): #keep searching until the fringe is empty
-        queue_front = queue.pop()
-        state = queue_front[0]
+        queue_front = queue.pop() #take the first item off the queue
+        state = queue_front[0] 
         path = queue_front[1]
-        if problem.isGoalState(state):
+        if problem.isGoalState(state): #if we have reached our goal, return the steps it took to get there
             return path
-        elif state not in visited_states:
-            visited_states.append(state)
-        else:
-            continue
-        successors = problem.getSuccessors(state)
-        for element in successors:
+        elif state not in visited_states: #if we haven't visited the state yet, add it to the list of visited states
+            visited_states.append(state) 
+        else: #if we have visited this state already skip it and don't add its successors
+            continue 
+        successors = problem.getSuccessors(state) #produce successors of current state
+        for element in successors: #add each successor to the queue
             new_path = path.copy()
             new_path.append(element[1])
             new_queue_item = [element[0],new_path]
@@ -166,36 +161,35 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
             # python3 pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
 
 
-    
-    util.raiseNotDefined()
-
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
-    queue = util.PriorityQueue()
+    queue = util.PriorityQueue() #create a priority queue for the states
+
+    #prepare and push starting state onto queue
     start_pos = problem.getStartState()
     queue_item = [start_pos,[],0] 
     queue.push(queue_item,0)
 
     visited_states = [] #will contain visited states to avoid repeating nodes
 
-    while not queue.isEmpty():
-        queue_front=queue.pop()
+    while not queue.isEmpty(): #keep exploring until the fringe is empty
+        queue_front=queue.pop() #pop off the queue
         state=queue_front[0]
         path=queue_front[1]
         cost=queue_front[2]
-        if problem.isGoalState(state):
+        if problem.isGoalState(state): #if we have reached the goal state return the actions it took to get there
             return path
-        elif state not in visited_states:
+        elif state not in visited_states: #if we haven't already visited the node, add it to the list of visited nodes
             visited_states.append(state)
-        else:
+        else: #if we have already explored this state don't explore it again
             continue
-        successors = problem.getSuccessors(state)
-        for element in successors:
+        successors = problem.getSuccessors(state) #generate successors
+        for element in successors: #add each successor to the path
             new_path=path.copy()
             new_path.append(element[1])
-            new_cost=cost+element[2]
+            new_cost=cost+element[2] #the cost of the state being added is the cost of parent node + child node
             new_queue_item=[element[0],new_path,new_cost]
             queue.push(new_queue_item,new_cost)
 
@@ -219,36 +213,39 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
 
-    queue = util.PriorityQueue()
+    queue = util.PriorityQueue() #create a priority queue
     start_pos = problem.getStartState()
-    starting_f = heuristic(start_pos, problem)
+    starting_f = heuristic(start_pos, problem) #f(n) for starting state
     queue_item = [start_pos,[],0,heuristic(start_pos,problem)]  #store state, path, cost, heuristic
     queue.push(queue_item,starting_f)
 
-    visited_dict = {}
+    #dictionary for states and their corresponding costs
+    #if a duplicate is found in the dictionary, contain the costs of the duplicate states
+    #the lower cost will replace the original value
+    visited_dict = {} 
 
-    while not queue.isEmpty():
-        queue_front=queue.pop()
+    while not queue.isEmpty(): #while the fringe is not empty
+        queue_front=queue.pop() #pop off the front of the queue
         state=queue_front[0]
         path=queue_front[1]
         cost=queue_front[2]
-        h = queue_front[3]
-        if problem.isGoalState(state):
+        h = queue_front[3] 
+        if problem.isGoalState(state): #if we have reached the state we want return the actions it took to get there
             return path
-        elif state not in visited_dict:
+        elif state not in visited_dict: #if the current state is not in the dictionary, add it
             visited_dict[state]=cost
-        else:
+        else: #if the state is in the dictionary update the value
             if visited_dict[state] > cost:
                 visited_dict[state] = cost
             else:
                 continue
-        successors = problem.getSuccessors(state)
-        for element in successors:
+        successors = problem.getSuccessors(state) #generate successors
+        for element in successors: #add successors
             new_path=path.copy()
-            new_path.append(element[1])
-            new_cost=cost+element[2]
-            new_h = heuristic(element[0],problem)
-            f = new_cost+new_h
+            new_path.append(element[1]) #create path for successor
+            new_cost=cost+element[2] #calculate new cost
+            new_h = heuristic(element[0],problem) #calculate h(n)
+            f = new_cost+new_h #calculate f(n)
             new_queue_item=[element[0],new_path,new_cost,new_h]
             queue.push(new_queue_item,f)
 

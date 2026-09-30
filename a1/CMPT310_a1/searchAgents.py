@@ -297,26 +297,23 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         
-        starting_position=self.startingPosition
-        visited_corners = ()
-        if starting_position in self.corners:
+        starting_position=self.startingPosition #store starting position
+        visited_corners = () #keep track of visited corners
+        if starting_position in self.corners: #if we start on a corner add it to the list of visited corners
             visited_corners+=(starting_position)
 
         return starting_position, visited_corners
     
-        util.raiseNotDefined()
-
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        pos, visited_corners = state
-        if len(visited_corners)==4:
+        pos, visited_corners = state #store position and list of visited corners
+        if len(visited_corners)==4: #check if we have visited 4 corners 
             return True
         else: 
             return False
-        util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
         """
@@ -341,21 +338,23 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x,y=currentPosition
-            dx, dy = Actions.directionToVector(action)
+            x,y=currentPosition #get current coordinaates
+            dx, dy = Actions.directionToVector(action) 
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             if hitsWall is True:
                 continue
             else:
-                new_state = nextx,nexty
-                if new_state in self.corners and new_state not in visited_corners:
-                    new_visited_corners = visited_corners
+                new_state = nextx,nexty #get new state
+                if new_state in self.corners and new_state not in visited_corners: #check if the state is a corner we haven't visited
+                    #prepare the successor (that is a corner we haven't visited)
+                    new_visited_corners = visited_corners 
                     new_visited_corners+=(new_state,)
                     successor = (new_state,new_visited_corners)
                     successor_tuple = (successor, action,1)
                     successors.append(successor_tuple)
                 else:
+                    #prepare the successor which is not in the list of corners we want to visit
                     new_visited_corners = visited_corners
                     successor = (new_state,new_visited_corners)
                     successor_tuple = (successor, action,1)
@@ -401,29 +400,25 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
 
     "*** YOUR CODE HERE ***"
 
-    pacman_pos, visited_corners = state
-    x,y = pacman_pos
-    #chosen heuristic: maximum manhattan distance to any of the 4 corners
+    pacman_pos, visited_corners = state #get pacman position and visited corners
+    x,y = pacman_pos #get pacman coordinates
+
+    #chosen heuristic:  manhattan distance to the furthest unvisited corner +  manhattan distance to the closest unvisited corner
     #manhattan distance formula: d = |x1-x2| + |y1-y2|
     corner_coords = []
     for item in corners:
         if (item not in visited_corners):
             corner_coords.append(item)
     
-    #x1,y1 = corner_coords[0][0] and corner_coords[0][1]
-    #x2, y2 = corner_coords[1][0] and corner_coords[1][1]
-    #x3,y3 = corner_coords[2][0] and corner_coords[2][1]
-    #x4,y4 = corner_coords[3][0] and corner_coords[3][1]
-
-    manhattan_distances = []
+    manhattan_distances = [] #will hold manhattan distances from pacman to each unvisited corner
 
     for item in corner_coords:
         manhattan_distance = abs(item[0]-x) + abs(item[1]-y)
         manhattan_distances.append(manhattan_distance)
 
-    if len(manhattan_distances)==0:
+    if len(manhattan_distances)==0: #if all corners are visited return 0
         return 0
-    else:
+    else: #else return heuristic
         return max(manhattan_distances)+min(manhattan_distances)
         
 
@@ -518,19 +513,19 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    distances_list=[]
-    food_list = foodGrid.asList()
-    x,y=position
+    distances_list=[] #list of distances to food
+    food_list = foodGrid.asList() #list of food positions
+    x,y=position #current coordinates
 
-    for item in food_list:
-        manhattan_distance = abs(item[0]-x)+abs(item[1]-y)
-        distances_list.append(manhattan_distance)
+    for item in food_list: 
+        manhattan_distance = abs(item[0]-x)+abs(item[1]-y) #calculate manhattan distance
+        distances_list.append(manhattan_distance) #add to list of distances
 
 
 
-    if len(distances_list)==0:
+    if len(distances_list)==0: #if all food has been eaten return 0
         return 0
-    else:
+    else: #else return heuristic
         return max(distances_list)
 
 
@@ -563,7 +558,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        path=search.breadthFirstSearch(problem)
+        path=search.ucs(problem) #get path to closest dot
         return path
         util.raiseNotDefined()
 
@@ -602,7 +597,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 
         "*** YOUR CODE HERE ***"
 
-        if self.food[x][y]:
+        if self.food[x][y]: #if there is food at current position return true
             return True
         else:
             return False
