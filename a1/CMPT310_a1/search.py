@@ -253,8 +253,6 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
     # python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
 
 
-    util.raiseNotDefined()
-
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
